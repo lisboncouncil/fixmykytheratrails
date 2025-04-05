@@ -1,5 +1,6 @@
 use FixMyStreet::TestMech;
 use FixMyStreet::App;
+use FixMyStreet::Script::Alerts;
 use FixMyStreet::Script::CSVExport;
 use FixMyStreet::Script::Reports;
 use FixMyStreet::Script::Questionnaires;
@@ -17,7 +18,7 @@ my $tilma = t::Mock::Tilma->new;
 LWP::Protocol::PSGI->register($tilma->to_psgi_app, host => 'tilma.mysociety.org');
 
 
-my $body = $mech->create_body_ok(2482, 'TfL', {}, { cobrand => 'tfl' });
+my $body = $mech->create_body_ok(2482, 'TfL', { cobrand => 'tfl' });
 FixMyStreet::DB->resultset('BodyArea')->find_or_create({
     area_id => 2483, # Hounslow
     body_id => $body->id,
@@ -28,6 +29,10 @@ FixMyStreet::DB->resultset('BodyArea')->find_or_create({
 });
 FixMyStreet::DB->resultset('BodyArea')->find_or_create({
     area_id => 2508, # Hackney
+    body_id => $body->id,
+});
+FixMyStreet::DB->resultset('BodyArea')->find_or_create({
+    area_id => 2504, # Westminster
     body_id => $body->id,
 });
 my $superuser = $mech->create_user_ok('superuser@example.com', name => 'Super User', is_superuser => 1);
@@ -47,7 +52,7 @@ $staffuser->user_body_permissions->create({
 });
 my $user = $mech->create_user_ok('londonresident@example.com');
 
-my $bromley = $mech->create_body_ok(2482, 'Bromley', {}, { cobrand => 'bromley' });
+my $bromley = $mech->create_body_ok(2482, 'Bromley', { cobrand => 'bromley' });
 my $bromleyuser = $mech->create_user_ok('bromleyuser@bromley.example.com', name => 'Bromley Staff', from_body => $bromley);
 $mech->create_contact_ok(
     body_id => $bromley->id,
@@ -69,7 +74,7 @@ $mech->create_contact_ok(
     group => ['Street cleaning'],
 );
 
-my $hackney = $mech->create_body_ok(2508, 'Hackney Council', {}, { cobrand => 'hackney' });
+my $hackney = $mech->create_body_ok(2508, 'Hackney Council', { cobrand => 'hackney' });
 $mech->create_contact_ok(
     body_id => $hackney->id,
     category => 'Abandoned Vehicle',
@@ -134,7 +139,7 @@ my $contact2b = $mech->create_contact_ok(
 
 my $contact3 = $mech->create_contact_ok(
     body_id => $body->id,
-    category => 'Pothole',
+    category => 'Pothole (major)',
     email => 'pothole@example.com',
 );
 $contact3->set_extra_fields({
@@ -274,6 +279,15 @@ subtest "creating a user on TfL creates tfl_password extra_metadata" => sub {
         ok $tfl_user->get_extra_metadata('tfl_password'), "TfL encrypted password created";
         $mech->log_out_ok();
     }
+};
+
+subtest "test Victoria Coach Station" => sub {
+    $mech->get_ok('/around');
+    $mech->submit_form_ok( { with_fields => { pc => 'VCS', } }, "submit location" );
+    $mech->content_contains('data-latitude=51.49228');
+    $mech->get_ok('/around');
+    $mech->submit_form_ok( { with_fields => { pc => 'victoria coach station', } }, "submit location" );
+    $mech->content_contains('data-longitude=-0.1488');
 };
 
 subtest "test report creation anonymously by button" => sub {
@@ -416,6 +430,30 @@ subtest "test report creation anonymously by staff user" => sub {
     $mech->log_out_ok;
 };
 
+subtest "test report creation as body by staff user" => sub {
+    $mech->log_in_ok( $staffuser->email );
+    $mech->get_ok('/around');
+    $mech->submit_form_ok( { with_fields => { pc => 'BR1 3UH', } }, "submit location" );
+    $mech->follow_link_ok( { text_regex => qr/skip this step/i, }, "follow 'skip this step' link" );
+    $mech->submit_form_ok({ with_fields => {
+        title => 'Test Report 3',
+        detail => 'Test report details.',
+        category => 'Bus stops',
+    } }, "submit report");
+    is_deeply $mech->page_errors, [], "check there were no errors";
+
+    my $report = FixMyStreet::DB->resultset("Problem")->find({ title => 'Test Report 3'});
+    ok $report, "Found the report";
+    is $report->name, 'TfL';
+    is $report->user->email, $staffuser->email;
+    is $report->anonymous, 0;
+    is $report->get_extra_metadata('contributed_as'), 'body';
+
+    $mech->content_contains('Your issue is on its way to Transport for London');
+    $mech->content_contains('Your reference for this report is FMS' . $report->id);
+    $mech->log_out_ok;
+};
+
 FixMyStreet::DB->resultset("Problem")->delete_all;
 
 my $tfl_staff = FixMyStreet::DB->resultset("User")->find({ email => 'test@tfl.gov.uk'});
@@ -513,6 +551,7 @@ subtest "test bus report creation outside London, .com" => sub {
     $mech->get_ok('/report/new?latitude=51.345714&longitude=-0.227959');
     $mech->content_lacks('Bus things');
     $mech->host('tfl.fixmystreet.com');
+    $mech->log_out_ok;
 };
 
 subtest "test bus report creation outside London" => sub {
@@ -528,12 +567,15 @@ subtest "test bus report creation outside London" => sub {
                 title => 'Test outwith London',
                 detail => 'Test report details.',
                 name => 'Joe Bloggs',
+                username_register => 'test@example.org',
                 may_show_name => '1',
                 category => 'Bus stops',
             }
         },
         "submit good details"
     );
+    my $link = $mech->get_link_from_email;
+    $mech->get_ok($link);
     $mech->content_contains('Your issue is on its way to Transport for London');
     is_deeply $mech->page_errors, [], "check there were no errors";
 
@@ -541,6 +583,7 @@ subtest "test bus report creation outside London" => sub {
     ok $report, "Found the report";
     is $report->state, 'confirmed', "report confirmed";
     is $report->bodies_str, $body->id;
+    is $report->user->from_body, undef;
     $report->delete;
 
     $mech->log_out_ok;
@@ -633,7 +676,7 @@ subtest 'Dashboard CSV extra columns' => sub {
     $mech->content_contains(',12345,,no,busstops@example.com,,', "Bike number added to csv");
     $mech->content_contains('"Council User",,,98756', "Stop code added to csv for all categories report");
     $mech->get_ok('/dashboard?export=1&category=Bus+stops');
-    $mech->content_contains('"Council User",,98756', "Stop code added to csv for bus stop category report");
+    $mech->content_contains('"Council User",,,98756', "Stop code added to csv for bus stop category report");
 
     $report->set_extra_fields({ name => 'leaning', value => 'Yes' }, { name => 'safety_critical', value => 'yes' },
         { name => 'stop_code', value => '98756' }, { name => 'Question', value => '12345' });
@@ -641,6 +684,10 @@ subtest 'Dashboard CSV extra columns' => sub {
 
     $contact5->update({ category => 'Trees (brown)' });
     my ($problem) = $mech->create_problems_for_body(1, $body->id, 'Trees test', { category => "Trees (brown)", cobrand => 'tfl' });
+
+    my $yesterday = DateTime->now()->subtract( days => 1 );
+    my ($y_rep) = $mech->create_problems_for_body(1, $body->id, 'Yesterday', { category => "Bus stops", cobrand => 'tfl', dt => $yesterday, state => 'duplicate' });
+    my $y_id = $y_rep->id;
 
     FixMyStreet::Script::CSVExport::process(dbh => FixMyStreet::DB->schema->storage->dbh);
 
@@ -655,6 +702,8 @@ subtest 'Dashboard CSV extra columns' => sub {
     $mech->content_contains('"Bus things","Bus stops"');
     $mech->content_contains('"BR1 3UH",Bromley,');
     $mech->content_contains(',12345,,yes,busstops@example.com,,' . $dt . ',"Council User",Yes,,98756');
+    my $c = () = $mech->encoded_content =~ /^$y_id/mg;
+    is $c, 1, 'Only one report from yesterday';
 
     $mech->get_ok('/dashboard?export=1');
     $mech->content_contains('Category,Subcategory');
@@ -669,6 +718,38 @@ subtest 'Dashboard CSV extra columns' => sub {
     $mech->content_contains('Trees (brown)');
     $contact5->update({ category => 'Trees' });
     $problem->delete;
+};
+
+subtest 'Test sending of updates' => sub {
+    my $report = FixMyStreet::DB->resultset("Problem")->find({ title => 'Test Report 1'});
+    my $update = $report->comments->first;
+    my $alert = $bromleyuser->alerts->create({
+        alert_type => 'new_updates',
+        parameter => $report->id,
+        whensubscribed => DateTime->now->subtract( hours => 2 ),
+        cobrand => 'fixmystreet',
+        confirmed => 1,
+    });
+
+    foreach (
+        { report => 'fixmystreet', update => '' },
+        { report => 'fixmystreet', update => 'tfl' },
+        { report => 'fixmystreet', update => 'fixmystreet' },
+        { report => 'tfl', update => '' },
+        { report => 'tfl', update => 'tfl' },
+    ) {
+        $report->update({ cobrand => $_->{report} });
+        $update->update({ cobrand => $_->{update} });
+        FixMyStreet::Script::Alerts::send_updates();
+        if ($_->{report} eq 'tfl') {
+            $mech->email_count_is(0);
+        } else {
+            my $text = $mech->get_text_body_from_email;
+            like $text, qr{Update text};
+            like $text, qr{report/@{[$report->id]}};
+        }
+        $alert->alerts_sent->delete;
+    }
 };
 
 subtest 'Inspect form state choices' => sub {
@@ -902,7 +983,7 @@ for my $host ( 'www.fixmystreet.com', 'tfl.fixmystreet.com' ) {
 subtest 'TfL staff can access TfL admin' => sub {
     $mech->log_in_ok( $staffuser->email );
     $mech->get_ok('/admin');
-    $mech->content_contains( 'Search Reports' );
+    $mech->content_contains( '<h1>Summary</h1>' );
 };
 
 subtest 'TLRN categories cannot be renamed' => sub {
@@ -966,7 +1047,7 @@ subtest 'Test user reports are visible on cobrands appropriately' => sub {
     $mech->host('tfl.fixmystreet.com');
     $mech->log_in_ok('test@example.com');
     $mech->get_ok('/my');
-    $mech->content_contains('1 to 2 of 2');
+    $mech->content_contains('1 to 3 of 3');
     $mech->content_contains('Test TfL report made on .com');
     $mech->content_contains('Test TfL report made on TfL');
     $mech->content_lacks('Test Bromley report');
@@ -1001,7 +1082,7 @@ FixMyStreet::override_config {
     COBRAND_FEATURES => {
         internal_ips => { tfl => [ '127.0.0.1' ] },
         safety_critical_categories => { tfl => {
-            Pothole => 1,
+            'Pothole (major)' => 1,
             Flooding => {
                 location => [ "carriageway" ],
             },
@@ -1032,7 +1113,7 @@ for my $test (
             'Flooding',
             'Flytipping (Bromley)', # In the 'Street cleaning' group
             'Grit bins',
-            'Pothole',
+            'Pothole (major)',
             'Private Category',
             'Timings',
             'Traffic lights',
@@ -1069,7 +1150,7 @@ for my $test (
             'Bus stops',
             'Flooding',
             'Grit bins',
-            'Pothole',
+            'Pothole (major)',
             'Private Category',
             'Timings',
             'Traffic lights',
@@ -1087,7 +1168,7 @@ for my $test (
             'Bus stops',
             'Flooding',
             'Grit bins',
-            'Pothole',
+            'Pothole (major)',
             'Private Category',
             'Timings',
             'Traffic lights',
@@ -1107,7 +1188,7 @@ for my $test (
             'Flooding',
             'Flytipping (Bromley)',
             'Grit bins',
-            'Pothole',
+            'Pothole (major)',
             'Private Category',
             'Timings',
             'Traffic lights',
@@ -1143,7 +1224,7 @@ for my $test (
             'Bus stops',
             'Flooding',
             'Grit bins',
-            'Pothole',
+            'Pothole (major)',
             'Private Category',
             'Timings',
             'Traffic lights',
@@ -1170,8 +1251,8 @@ for my $host ( 'tfl.fixmystreet.com', 'www.fixmystreet.com', 'bromley.fixmystree
         {
             name => "test safety critical category",
             safety_critical => 'yes',
-            category => "Pothole",
-            subject => "Dangerous Pothole Report: Test Report",
+            category => "Pothole (major)",
+            subject => "Dangerous Pothole (major) Report: Test Report",
             pc => "BR1 3EF", # this is on a red route (according to Mock::MapIt and Mock::Tilma anyway)
         },
         {
@@ -1230,9 +1311,7 @@ for my $host ( 'tfl.fixmystreet.com', 'www.fixmystreet.com', 'bromley.fixmystree
                 "submit report form"
             );
 
-            my $report = FixMyStreet::App->model('DB::Problem')->to_body( $body->id )->search(undef, {
-                order_by => { -desc => 'id' },
-            })->first;
+            my $report = FixMyStreet::App->model('DB::Problem')->to_body( $body->id )->order_by('-id')->first;
             ok $report, "Found the report";
 
             is $report->get_extra_field_value('safety_critical'), $test->{safety_critical}, "safety critical flag set to " . $test->{safety_critical};
@@ -1360,7 +1439,7 @@ FixMyStreet::override_config {
 subtest 'Bromley staff can access Bromley admin' => sub {
     $mech->log_in_ok( $bromleyuser->email );
     $mech->get_ok('/admin');
-    $mech->content_contains( 'Search Reports' );
+    $mech->content_contains( '<h1>Summary</h1>' );
     $mech->log_out_ok;
 };
 
@@ -1393,7 +1472,7 @@ FixMyStreet::override_config {
 subtest 'check contact creation allows email from borough email addresses' => sub {
 
     $mech->log_in_ok($staffuser->email);
-    $mech->get_ok('/admin/body/' . $body->id);
+    $mech->get_ok('/admin/body/' . $body->id . '/_add');
 
     $mech->submit_form_ok( { with_fields => {
         category   => 'test category',
@@ -1417,14 +1496,14 @@ FixMyStreet::override_config {
         $mech->content_contains('Hounslow');
         $mech->content_lacks('Auriol'); # 2457
         $mech->content_lacks('Brownswood'); # 2508
-        $mech->content_contains('data-area="2482,2483,2508"'); # No 2457
+        $mech->content_contains('data-area="2482,2483,2504,2508"'); # No 2457
         $mech->host('fixmystreet.com');
         $mech->get_ok('/reports/TfL');
         $mech->content_contains('Bromley');
         $mech->content_contains('Hounslow');
         $mech->content_lacks('Auriol'); # 2457
         $mech->content_lacks('Brownswood'); # 2508
-        $mech->content_contains('data-area="2482,2483,2508"'); # No 2457
+        $mech->content_contains('data-area="2482,2483,2504,2508"'); # No 2457
     };
 };
 

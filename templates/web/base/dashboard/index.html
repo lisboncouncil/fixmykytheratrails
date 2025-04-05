@@ -8,7 +8,6 @@
     INCLUDE 'header.html'
         title = loc('Dashboard')
         robots = 'noindex, nofollow'
-        bodyclass = 'fullwidthpage'
 %]
 
 <form>
@@ -21,7 +20,7 @@
 <h1>[% loc('Summary statistics') %]</h1>
 [% END %]
 
-<div class="filters">
+<div class="filters dashboard-filters">
   [% IF body %]
     [% IF extra_bodies %]
     <p>

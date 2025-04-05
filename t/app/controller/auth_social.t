@@ -20,8 +20,8 @@ END { FixMyStreet::App->log->enable('info'); }
 
 my $body = $mech->create_body_ok(2504, 'Westminster City Council');
 my $body2 = $mech->create_body_ok(2508, 'Hackney Council');
-my $body3 = $mech->create_body_ok(2488, 'Brent Council', {}, { cobrand => 'brent' });
-my $body4 = $mech->create_body_ok(2482, 'TfL', {}, { cobrand => 'tfl' }); # Bromley area
+my $body3 = $mech->create_body_ok(2488, 'Brent Council', { cobrand => 'brent' });
+my $body4 = $mech->create_body_ok(2482, 'TfL', { cobrand => 'tfl' }); # Bromley area
 
 FixMyStreet::DB->resultset("Role")->create({
     body => $body4,
@@ -129,7 +129,7 @@ for my $state ( 'refused', 'no email', 'existing UID', 'okay' ) {
                 $mech->submit_form_ok( { with_fields => { pc => $test->{pc} || 'SW1A1AA' } }, "submit location" );
                 $mech->follow_link_ok( { text_regex => qr/skip this step/i, }, "follow 'skip this step' link" );
                 $mech->submit_form(with_fields => {
-                    category => 'Bins',
+                    category => 'G|Bins',
                     'category.Bins' => 'Damaged bin',
                     title => 'Test title',
                     detail => 'Test detail',
@@ -143,6 +143,7 @@ for my $state ( 'refused', 'no email', 'existing UID', 'okay' ) {
                     update => 'Test update',
                 };
             }
+            $mech->form_with_fields('social_sign_in');
             $mech->submit_form(with_fields => $fields, button => 'social_sign_in');
 
             # As well as the cookie issue above, caused by this external
@@ -173,7 +174,7 @@ for my $state ( 'refused', 'no email', 'existing UID', 'okay' ) {
             if ($page eq 'report') {
                 $mech->content_contains('/report/new');
                 $mech->content_contains('Salt bin');
-                $mech->content_contains('name="category" value="Bins" data-subcategory="Bins" checked');
+                $mech->content_like(qr{value="G|Bins"\s+data-subcategory="Bins" checked});
                 $mech->content_contains('name="category.Bins" data-category_display="Damaged bin" value=\'Damaged bin\' checked');
             } elsif ($page eq 'update') {
                 $mech->content_contains('/report/update');
@@ -319,7 +320,7 @@ for my $tw_state ( 'refused', 'existing UID', 'no email' ) {
                 $mech->submit_form_ok( { with_fields => { pc => 'SW1A1AA' } }, "submit location" );
                 $mech->follow_link_ok( { text_regex => qr/skip this step/i, }, "follow 'skip this step' link" );
                 $mech->submit_form(with_fields => {
-                    category => 'Bins',
+                    category => 'G|Bins',
                     'category.Bins' =>'Damaged bin',
                     title => 'Test title',
                     detail => 'Test detail',
@@ -635,7 +636,11 @@ for my $setup (
                         token_uri => 'http://oidc.example.org/oauth2/v2.0/token',
                         logout_uri => 'http://oidc.example.org/oauth2/v2.0/logout',
                         password_change_uri => 'http://oidc.example.org/oauth2/v2.0/password_change',
-                        display_name => 'MyAccount'
+                        display_name => 'MyAccount',
+                        role_map => {
+                            BasicEditorViewers => 'Streetcare - Basic Editor Viewers',
+                            Admin => 'Streetcare - Admin',
+                        },
                     }
                 }
             }

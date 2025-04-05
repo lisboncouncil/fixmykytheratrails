@@ -1,8 +1,4 @@
-[% SET bodyclass = 'waste' %]
-
-[% INCLUDE header.html %]
-
-<div class="waste__loading_wrapper">
+[% INCLUDE waste/header.html %]
 
   [% PROCESS 'govuk/fields.html' %]
   [% PROCESS title title=form.title %]
@@ -14,7 +10,7 @@
   <h3>How much does it cost?</h3>
 
   <p>
-    £[% tprintf('%.2f', per_bin_cost / 100 ) %] for 12 months, which equates to just £[% tprintf('%.2f', per_bin_cost / 5200 ) %] a week. For this you will receive a large 240 litre wheelie bin to place your green garden waste in and a collection every two weeks.
+    £[% tprintf('%.2f', garden_costs.per_bin / 100 ) %] for 12 months, which equates to just £[% tprintf('%.2f', garden_costs.per_bin / 5200 ) %] a week. For this you will receive a large 240 litre wheelie bin to place your green garden waste in and a collection every two weeks.
   </p>
 
   <h3>
@@ -66,7 +62,5 @@
 <form method="post" action="garden">
   [% PROCESS form %]
 </form>
-
-</div>
 
 [% INCLUDE footer.html %]

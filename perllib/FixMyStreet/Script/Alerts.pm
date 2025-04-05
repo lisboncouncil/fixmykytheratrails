@@ -53,9 +53,9 @@ sub send_alert_type {
                $item_table.confirmed as item_confirmed,
                $item_table.photo as item_photo,
                $item_table.problem_state as item_problem_state,
-               $item_table.cobrand as item_cobrand,
                $item_table.extra as item_extra,
                $item_table.private_email_text as item_private_email_text,
+               $head_table.cobrand as item_cobrand,
                $head_table.*
         from alert, $item_table, $head_table
             where alert.parameter::integer = $head_table.id
@@ -126,13 +126,20 @@ sub send_alert_type {
             # this might throw up the odd false positive but only in cases where the
             # state has changed and there was already update text
             if ($row->{item_problem_state} && $last_problem_state ne $row->{item_problem_state}) {
-                my $cobrand_name = $report->cobrand_name_for_state($cobrand);
-                my $state = FixMyStreet::DB->resultset("State")->display($row->{item_problem_state}, 1, $cobrand_name);
+                my $update = '';
+                unless ( $cobrand->call_hook( skip_alert_state_changed_to => $report ) ) {
+                    my $cobrand_name = $report->cobrand_name_for_state($cobrand);
+                    my $state = FixMyStreet::DB->resultset("State")->display($row->{item_problem_state}, 1, $cobrand_name);
 
-                my $update = _('State changed to:') . ' ' . $state;
+                    $update = _('State changed to:') . ' ' . $state;
+                }
+
                 $row->{item_text_original} = $row->{item_text};
                 $row->{item_text} = $row->{item_text} ? $row->{item_text} . "\n\n" . $update :
                                                         $update;
+                if ($row->{item_private_email_text} && $report->cobrand_data ne 'waste') {
+                    $row->{item_private_email_text} = $row->{item_private_email_text} . "\n\n" . $update;
+                }
                 $last_problem_state = $row->{item_problem_state};
             }
             next unless $row->{item_text};
@@ -319,8 +326,8 @@ sub send_local {
         my $latitude  = $alert->parameter2;
         my $lon_rad = deg2rad($longitude);
         my $lat_rad = deg2rad(90 - $latitude);
-        my $d = $alert->parameter3;
-        $d ||= FixMyStreet::Gaze::get_radius_containing_population($latitude, $longitude);
+        my $distance = $alert->parameter3;
+        $distance ||= FixMyStreet::Gaze::get_radius_containing_population($latitude, $longitude);
         my %data = (
             template => $alert_type->template,
             data => [],
@@ -340,7 +347,7 @@ sub send_local {
             # Ignore alerts on reports by the same user
             next if $alert->user_id == $row->{user_id};
             # Ignore reports too far away
-            next if great_circle_distance($row->{lon_rad}, $row->{lat_rad}, $lon_rad, $lat_rad, 6372.8) > $d;
+            next if great_circle_distance($row->{lon_rad}, $row->{lat_rad}, $lon_rad, $lat_rad, 6372.8) > $distance;
             # Ignore reports already alerted on
             next if $schema->resultset('AlertSent')->search({ alert_id => $alert->id, parameter => $row->{id} })->count;
 
@@ -399,7 +406,7 @@ sub _send_aggregated_alert(%) {
     if (@template_data) {
         my %template_data = %data;
         $template_data{data} = [@template_data];
-        $template_data{template} = 'templated_email_alert-update';
+        $template_data{private_email} = 1;
         trigger_alert_sending($alert_by, $token, %template_data);
     };
 
@@ -468,6 +475,7 @@ sub _send_aggregated_alert_phone {
 sub alert_check_cobrand {
     my ($alert_cobrand, $item_cobrand) = @_;
     return 1 if $alert_cobrand ne 'tfl' && $item_cobrand eq 'tfl';
+    return 1 if $alert_cobrand eq 'highwaysengland' && $item_cobrand ne 'highwaysengland';
     return 1 if $alert_cobrand eq 'cyclinguk' && $item_cobrand ne 'cyclinguk';
     return 0;
 }

@@ -33,6 +33,7 @@ sub disambiguate_location {
     my $string  = shift;
 
     return {
+        %{ $self->SUPER::disambiguate_location() },
         centre => '55.2426024934787,-2.06541585421059',
         span   => '1.02929721743568,1.22989513596542',
         bounds => [ 54.7823703267595, -2.68978494847825, 55.8116675441952, -1.45988981251283 ],
@@ -40,6 +41,11 @@ sub disambiguate_location {
 }
 
 sub admin_user_domain { 'northumberland.gov.uk' }
+
+sub is_defect {
+    my ($self, $p) = @_;
+    return $p->service eq 'Open311';
+}
 
 =item * The default map zoom is a bit more zoomed-in
 
@@ -69,10 +75,6 @@ sub pin_colour {
     return 'orange'; # all the other `open_states` like "in progress"
 }
 
-sub path_to_pin_icons {
-    return '/cobrands/northumberland/images/';
-}
-
 =item * Hovering over a pin includes the state as well as the title
 
 =cut
@@ -92,6 +94,12 @@ sub cut_off_date { '2023-05-03' }
 =item * The contact form is for abuse reports only
 
 =cut
+
+=item * Add display_name as an extra contact field
+
+=cut
+
+sub contact_extra_fields { [ 'display_name' ] }
 
 sub abuse_reports_only { 1 }
 
@@ -208,8 +216,68 @@ sub dashboard_export_problems_add_columns {
     });
 }
 
+=item * Updates on reports fetched from Alloy are not sent.
+
+=cut
+
+sub should_skip_sending_update {
+    my ($self, $comment) = @_;
+    my $p = $comment->problem;
+    return $self->is_defect($p);
+}
+
 =back
 
 =cut
+
+=head2 record_update_extra_fields
+
+We want to create comments when assigned (= shortlisted) user or
+extra details (= detail_information) are updated for a report.
+
+=cut
+
+sub record_update_extra_fields {
+    {   shortlisted_user     => 1,
+        detailed_information => 1,
+    };
+}
+
+=head2 open311_munge_update_params
+
+We pass a report's 'detailed_information' (from its
+extra_metadata) to Alloy, as an 'extra_details' attribute.
+
+We pass the name and email address of the user assigned to the report (the
+user who has shortlisted the report).
+
+We pass any category change.
+
+=cut
+
+sub open311_munge_update_params {
+    my ( $self, $params, $comment, undef ) = @_;
+
+    my $p = $comment->problem;
+
+    my $detailed_information
+        = $p->get_extra_metadata('detailed_information') // '';
+    $params->{'attribute[extra_details]'} = $detailed_information;
+
+    my $assigned_to = $p->shortlisted_user;
+    $params->{'attribute[assigned_to_user_email]'}
+        = $assigned_to
+        ? $assigned_to->email
+        : '';
+
+    if ( $comment->text =~ /Category changed/ ) {
+        my $service_code = $p->contact->email;
+        my $category_group = $p->get_extra_metadata('group');
+
+        $params->{service_code} = $service_code;
+        $params->{'attribute[group]'} = $category_group
+            if $category_group;
+    }
+}
 
 1;
