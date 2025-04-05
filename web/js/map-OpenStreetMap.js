@@ -17,6 +17,10 @@ fixmystreet.maps.config = function() {
  *  - <OpenLayers.Layer.OSM>
  */
 OpenLayers.Layer.OSM.Mapnik = OpenLayers.Class(OpenLayers.Layer.OSM, {
+
+
+    
+
     /**
      * Constructor: OpenLayers.Layer.OSM.Mapnik
      *
@@ -25,10 +29,18 @@ OpenLayers.Layer.OSM.Mapnik = OpenLayers.Class(OpenLayers.Layer.OSM, {
      * options - {Object} Hashtable of extra options to tag onto the layer
      */
     initialize: function(name, options) {
+
+        var _myvar = '?pippo';
+
         var url = [
-            "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-            "https://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-            "https://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
+
+            'https://api.mapbox.com/styles/v1/andriatz/cm4h15h92015r01s6c6gl78b8/tiles/256/${z}/${x}/${y}@2x?access_token=pk.eyJ1IjoiYW5kcmlhdHoiLCJhIjoiY200Z3czZ2ZmMDB0ajJpcXJlaXRubnYxNiJ9.lMzdXLvFB7pxyh3e23yhgw',
+            'https://api.mapbox.com/styles/v1/andriatz/cm4h15h92015r01s6c6gl78b8/tiles/256/${z}/${x}/${y}@2x?access_token=pk.eyJ1IjoiYW5kcmlhdHoiLCJhIjoiY200Z3czZ2ZmMDB0ajJpcXJlaXRubnYxNiJ9.lMzdXLvFB7pxyh3e23yhgw',
+/*
+            "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png" + _myvar,
+            "https://b.tile.openstreetmap.org/${z}/${x}/${y}.png" + _myvar,
+            "https://c.tile.openstreetmap.org/${z}/${x}/${y}.png" + _myvar
+*/
         ];
         options = OpenLayers.Util.extend({
             /* Below line added to OSM's file in order to allow minimum zoom level */

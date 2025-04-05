@@ -1,0 +1,10 @@
+[%
+SET form_title = c.cobrand.new_report_title_field_label.defined ?
+    c.cobrand.new_report_title_field_label : loc("Short summary");
+SET form_title_placeholder = c.cobrand.new_report_title_field_hint.defined ?
+    c.cobrand.new_report_title_field_hint : loc("Explain the situation in 3-4 words, e.g. broken trash can or bird sighting - peregrine falcon");
+SET form_detail_label = c.cobrand.new_report_detail_field_label.defined ?
+    c.cobrand.new_report_detail_field_label : loc("Help us understand the situation.");
+SET form_detail_placeholder = c.cobrand.new_report_detail_field_hint.defined ?
+    c.cobrand.new_report_detail_field_hint : loc('Describe what you observe, including estimated quantity / size, as well as trail number and any landmarks in case of geolocation errors');
+-%]
