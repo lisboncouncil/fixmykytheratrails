@@ -99,7 +99,7 @@ sub load_and_check_areas : Private {
     # If we don't have any areas we can't accept the report
     if ( !scalar keys %$all_areas ) {
         $c->stash->{location_error_no_areas} = 1;
-        $c->stash->{location_error} = _('The selected location is outside of Kythera island. Please try again.');
+        $c->stash->{location_error} = _('That location does not appear to be covered by a council; perhaps it is offshore or outside the country. Please try again.');
         return;
     }
 
