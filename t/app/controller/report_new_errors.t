@@ -723,7 +723,7 @@ subtest "check that a lat/lon off coast leads to /around" => sub {
 
     is_deeply
       $mech->page_errors,
-      [ 'The selected location is outside of Kythera island. Please try again.' ],
+      [ 'That location does not appear to be covered by a council; perhaps it is offshore or outside the country. Please try again.' ],
       "Found location error";
 
 };
