@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: matthew@mysociety.org\n"
 "POT-Creation-Date: 2023-06-22 17:55+0100\n"
-"PO-Revision-Date: 2025-04-29 14:55+0200\n"
+"PO-Revision-Date: 2025-04-30 15:59+0200\n"
 "Last-Translator: mySociety <transifex@mysociety.org>, 2021\n"
 "Language-Team: Greek (Greece) (https://app.transifex.com/mysociety/teams/12067/el_GR/)\n"
 "Language: el_GR\n"
@@ -6920,6 +6920,18 @@ msgstr "Το στέλνουμε στο ΚΙΠΑ, το ίδρυμα που είν
 
 msgid "KIPA"
 msgstr "ΚΙΠΑ"
+
+#: templates/web/fmsk/about/tos.html
+msgid "Condition of use"
+msgstr "Όροι χρήσης"
+
+#: templates/web/fmsk/about/privacy.html
+msgid "Privacy policy"
+msgstr "Πολιτική απορρήτου"
+
+#: templates/web/fmsk/about/cookies.html
+msgid "Cookies policy"
+msgstr "Πολιτική για τα cookies"
 
 #: templates/web/base/admin/waste/bulky_items.html:40
 msgid "🗑"
