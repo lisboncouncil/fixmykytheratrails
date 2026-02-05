@@ -92,7 +92,8 @@ body.mappage {
         background: linear-gradient(#000, #444 10%, #444 95%, #111);
     }
     a.report-a-problem-btn:hover {
-        background: $primary/1.1;
+        //background: $primary/1.1;
+        background: lighten($primary, 10%);
     }
 }
 

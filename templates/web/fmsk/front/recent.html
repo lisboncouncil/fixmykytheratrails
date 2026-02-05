@@ -12,11 +12,18 @@
         [% END -%]
     </h2>
 
-    <div class="map-fake">
-        <a href="https://fmsk.lisboncouncilresearch.com/reports/Kipa?zoom=12&lat=36.21596&lon=22.9769">
-            <img src="/cobrands/fmsk/images/kipa-map-fake.png" alt="Kipa Map" />
-        </a>
-    </div>
+    [% IF map %]
+        <div id="front-map-container">
+            [% INCLUDE "maps/openlayers.html" %]
+            </div>[%# close #map_box opened by openlayers.html %]
+        </div>
+    [% ELSE %]
+        <div class="map-fake">
+            <a href="[% c.uri_for('/reports/Kipa', { zoom => 12, lat => 36.21596, lon => 22.9769 }) %]">
+                <img src="/cobrands/fmsk/images/kipa-map-fake.png" alt="Kipa Map" />
+            </a>
+        </div>
+    [% END %]
 
     [% TRY %][% INCLUDE "front/pre-recent.html" %][% CATCH file %][% END %]
 

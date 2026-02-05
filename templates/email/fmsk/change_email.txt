@@ -1,0 +1,23 @@
+Subject: Ενημέρωση διεύθυνσης ηλεκτρονικού ταχυδρομείου [% site_name %]
+
+Παρακαλώ κάντε κλικ στον παρακάτω σύνδεσμο για να επιβεβαιώσετε ότι επιθυμείτε να ενημερώσετε τη διεύθυνση ηλεκτρονικού ταχυδρομείου σας στο [% site_name %].
+
+[% c.uri_for_action( 'auth/token', token ) | replace('https://fixmy', 'https://en.fixmy') | replace('http://fixmy', 'http://en.fixmy') %]
+
+[% signature %]
+
+Αυτό το μήνυμα ηλεκτρονικού ταχυδρομείου αποστάλη αυτόματα από έναν μη ελεγχόμενο λογαριασμό ηλεκτρονικού ταχυδρομείου, οπότε
+παρακαλώ μην απαντήσετε σε αυτό.
+
+
+*** ENGLISH ***
+
+Please click on the link below to confirm you wish to update your
+email address on [% site_name %].
+
+[% c.uri_for_action( 'auth/token', token ) | replace('https://fixmy', 'https://en.fixmy') | replace('http://fixmy', 'http://en.fixmy') %]
+
+[% signature %]
+
+This email was sent automatically, from an unmonitored email account - so
+please do not reply to it.

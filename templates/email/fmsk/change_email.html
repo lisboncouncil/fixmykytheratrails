@@ -1,0 +1,34 @@
+[%
+
+email_columns = 1;
+
+PROCESS '_email_settings.html';
+
+INCLUDE '_email_top.html';
+
+%]
+
+<th style="[% td_style %][% only_column_style %]">
+
+  <h2 style="[% h2_style %]; text-align:center; padding-top: 2em;">*** Ελληνικά ***</h2>
+
+  <h1 style="[% h1_style %]">Αλλάξτε τη διεύθυνση email σας στο [% site_name %]</h1>
+  <p style="[% p_style %]">Κάντε κλικ στον παρακάτω σύνδεσμο για να επιβεβαιώσετε ότι θέλετε να ενημερώσετε τη διεύθυνση email σας στο [% site_name %]. Πρέπει να είστε συνδεδεμένοι στο λογαριασμό σας [% site_name %] σε αυτήν τη συσκευή και να κάνετε κλικ στον σύνδεσμο εντός 24 ωρών.</p>
+  <p style="margin: 20px auto; text-align: center">
+    <a style="[% button_style %]" href="[% c.uri_for_action( 'auth/token', token ) %]">Αλλάξε τη διεύθυνση email μου</a>
+  </p>
+  <p style="[% p_style %]">Εάν δεν θέλετε πλέον να αλλάξετε τη διεύθυνση email σας, απλώς αγνοήστε αυτό το μήνυμα.</p>
+
+
+  <h2 style="[% h2_style %]; text-align:center; padding-top: 2em;">*** English ***</h2>
+
+  <h1 style="[% h1_style %]">Change your [% site_name %] email&nbsp;address</h1>
+  <p style="[% p_style %]">Please click on the link below to confirm you wish to update your
+email address on [% site_name %]. You must be logged in to your [% site_name %] account on this device and click on the link within 24 hours.</p>
+  <p style="margin: 20px auto; text-align: center">
+    <a style="[% button_style %]" href="[% c.uri_for_action( 'auth/token', token ) %]">Change my email address</a>
+  </p>
+  <p style="[% p_style %]">If you no longer wish to change your email address, just ignore this email.</p>
+</th>
+
+[% INCLUDE '_email_bottom.html' %]

@@ -15,6 +15,8 @@ $button-margin-left: 0 !default;
 //Border-radius
 $button-border-radius: 4px !default;
 
+$nav-colour: null;
+
 @if (variable-exists(nav_fg)) {
     $nav_colour: $nav_fg !global;
 }

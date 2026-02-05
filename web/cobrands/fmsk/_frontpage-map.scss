@@ -1,0 +1,66 @@
+// Frontpage dynamic map styles for FMSK cobrand
+
+#front-map-container {
+    margin-bottom: 1em;
+    width: 100%;
+    clear: both;
+
+    // Reset any absolute positioning from the map
+    #map_box {
+        position: relative !important;
+        height: 400px;
+        width: 100%;
+        margin-bottom: 1em;
+        border-radius: 4px;
+        overflow: hidden;
+        float: none !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+
+        // Map container fills the box
+        #map {
+            position: relative !important;
+            width: 100% !important;
+            height: 100% !important;
+            float: none !important;
+        }
+    }
+
+    // Hide unnecessary elements on frontpage map
+    #map_sidebar,
+    .shadow-wrap,
+    #sub_map_links,
+    .ol-compass,
+    .map-links,
+    #js-map-data,
+    .big-green-banner,
+    .map-instructions {
+        display: none !important;
+    }
+
+    // Position attribution properly
+    .olControlAttribution,
+    .ol-attribution {
+        position: absolute !important;
+        bottom: 5px !important;
+        right: 5px !important;
+        font-size: 10px;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 2px 5px;
+        z-index: 100;
+    }
+}
+
+// Responsive adjustments
+@media only screen and (max-width: 768px) {
+    #front-map-container #map_box {
+        height: 300px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    #front-map-container #map_box {
+        height: 250px;
+    }
+}

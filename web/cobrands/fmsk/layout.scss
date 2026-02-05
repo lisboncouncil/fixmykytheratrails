@@ -1,2 +1,28 @@
 @import "_colours";
 @import "../sass/layout";
+@import "_frontpage-map";
+
+.nav-menu--main {
+  a, span {
+    color: $white;
+
+    &:visited, &:link {
+        color: $white;
+    }
+
+    &:hover {
+      color: $primary_b;
+      background-color: $nav_hover_background_colour;
+    }
+  }
+
+  a.report-a-problem-btn {
+    color: #222 !important;
+    background-color: #e7bc3b;
+
+    &:hover {
+      background-color: #e5b115;
+    }
+  }
+  
+}

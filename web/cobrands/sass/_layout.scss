@@ -158,7 +158,8 @@ h1 {
     margin:0.5em;
     border-radius: 0.25em;
     &:hover {
-      background-color:$primary/1.1;
+      //background-color:$primary/1.1;
+      background-color: lighten($primary, 10%);
     }
   }
   span {

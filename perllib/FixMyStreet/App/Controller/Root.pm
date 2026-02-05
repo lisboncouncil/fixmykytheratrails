@@ -83,6 +83,9 @@ sub index : Path : Args(0) {
     }
 
     $c->forward('/auth/get_csrf_token');
+
+    # Call cobrand hook for front page data (e.g., dynamic map)
+    $c->cobrand->call_hook('front_page_data', $c);
 }
 
 =head2 default
