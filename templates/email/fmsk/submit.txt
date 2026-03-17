@@ -1,15 +1,57 @@
-Subject: Problem Report: [% report.title %]
+Subject: Αναφορά / Report: [% report.title %]
+
+Αγαπητή [% bodies_name %],
+
+[% missing %][% multiple %] Ένας χρήστης του [% site_name %] υπέβαλε την ακόλουθη αναφορά, η οποία πιστεύει ότι μπορεί να απαιτεί την προσοχή σας.
+
+    [% url | replace('://fixmy', '://el.fixmy') | replace('://en.fixmy', '://el.fixmy') %]
+
+[% has_photo %]----------
+
+Ονομα: [% report.name %]
+
+Ηλεκτρονικό ταχυδρομείο: [% report.user.email OR "Δεν παρέχεται" %]
+
+Τηλέφωνο: [% report.user.phone OR "Δεν παρέχεται" %]
+
+Κατηγορία: [% report.category %]
+
+Τίτλος: [% report.title %]
+
+Πληροφορίες: [% report.detail %]
+
+[% FOR field IN report.get_extra_fields %][% IF field.value_label OR field.value.length ~%]
+[% field.description OR field.name %]: [% field.value_label OR field.value %]
+
+[% END %][% END ~%]
+
+Γεωγραφικό πλάτος: [% report.latitude %]
+
+γεωγραφικό μήκος: [% report.longitude %]
+
+Δείτε το OpenStreetMap αυτής της τοποθεσίας: [% osm_url %]
+
+[% closest_address %]----------
+
+Οι απαντήσεις σε αυτό το email θα σταλούν στον χρήστη που υπέβαλε την αναφορά.
+
+
+Με εκτίμηση,
+Η ομάδα του [% site_name %]
+
+Εάν υπάρχει μια πιο κατάλληλη διεύθυνση ηλεκτρονικού ταχυδρομείου για μηνύματα σχετικά με το " _ category_footer _ ", παρακαλούμε ενημερώστε μας. Αυτό θα βοηθήσει στη βελτίωση της υπηρεσίας για τους κατοίκους της περιοχής. Καλωσορίζουμε επίσης οποιαδήποτε άλλη ανατροφοδότηση έχετε.
+
+*** ENGLISH ***
 
 Dear [% bodies_name %],
 
 [% missing %][% multiple %]A user of
-[% site_name %] has submitted the following report
-of a local problem that they believe might require your attention.
+[% site_name %] has submitted the following report, which they believe might require your attention.
 
-[% fuzzy %], or to provide an update on the problem,
+[% fuzzy %], or to provide an update on the issue,
 please visit the following link:
 
-    [% url %]
+    [% url | replace('://fixmy', '://en.fixmy') | replace('://el.fixmy', '://en.fixmy') %]
 
 [% has_photo %]----------
 
@@ -38,7 +80,7 @@ View OpenStreetMap of this location: [% osm_url %]
 
 [% closest_address %]----------
 
-Replies to this email will go to the user who submitted the problem.
+Replies to this email will go to the user who submitted the report.
 
 [% signature %]
 
