@@ -1,0 +1,36 @@
+Subject: Τα στοιχεία του λογαριασμού σας στο [% site_name %] / Your [% site_name %] account details
+
+Παρακαλώ κάντε κλικ στον παρακάτω σύνδεσμο για να επιβεβαιώσετε τη διεύθυνση ηλεκτρονικού ταχυδρομείου σας.
+
+[% c.uri_for_action( 'auth/token', token ) | replace('://fixmy', '://el.fixmy') | replace('://en.fixmy', '://el.fixmy') %]
+
+[% IF c.get_param('r').match('waste') %]
+Μόλις το κάνετε αυτό, θα μπορείτε να δείτε ή να τροποποιήσετε τις συνδρομές και τις παραλαβές απορριμμάτων σας.
+[% ELSE %]
+Μόλις το κάνετε αυτό, θα μπορείτε να προβάλετε και να διαχειριστείτε όλες τις αναφορές και τις ενημερώσεις που έχετε κάνει στο [% site_name %].
+[% END %]
+
+Με εκτίμηση,
+Η ομάδα του [% site_name %]
+
+Αυτό το email αποστάλη αυτόματα από έναν αυτοματοποιημένο λογαριασμό email, οπότε παρακαλούμε μην απαντήσετε σε αυτό.
+
+
+
+*** ENGLISH ***
+
+Please click on the link below to confirm your email address.
+
+[% c.uri_for_action( 'auth/token', token ) | replace('://fixmy', '://en.fixmy') | replace('://el.fixmy', '://en.fixmy') %]
+
+[% IF c.get_param('r').match('waste') %]
+Once you've done this, you'll be able to view or amend your waste subscriptions and collections.
+[% ELSE %]
+Once you've done this, you'll be able to view and manage all reports and
+updates you've made on [% site_name %].
+[% END %]
+
+[% signature %]
+
+This email was sent automatically, from an unmonitored email account - so
+please do not reply to it.
