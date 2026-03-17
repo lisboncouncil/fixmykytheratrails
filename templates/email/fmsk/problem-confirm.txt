@@ -1,0 +1,63 @@
+Subject: [% site_name %]: Επιβεβαιώστε την αναφορά σας / Confirm your report
+
+Γεια σας [% report.name %],
+Παρακαλώ κάντε κλικ στον παρακάτω σύνδεσμο για να επιβεβαιώσετε ότι θέλετε να στείλετε την αναφορά σας στο
+[% report.body %].
+[% IF report.non_public %]Σημειώστε ότι η αναφορά σας δεν θα
+δημοσιευτεί για δημόσια προβολή στον ιστότοπο [% site_name %], αλλά θα σταλεί στο [% report.body %].
+[% ELSE %]Σημειώστε ότι η αναφορά σας θα εμφανιστεί επίσης στον ιστότοπο [% site_name %].[% END %]
+[% token_url | replace(“://fixmy”, “://en.fixmy”) | replace(“://el.fixmy”, “://en.fixmy”) %]
+Εάν το πρόγραμμα ηλεκτρονικού ταχυδρομείου σας δεν σας επιτρέπει να κάνετε κλικ σε αυτόν τον σύνδεσμο, αντιγράψτε τον και επικολλήστε τον
+στον περιηγητή ιστού σας και πατήστε το πλήκτρο Enter.
+[% IF c.cobrand.is_council && !c.cobrand.owns_problem( report ) %]
+Σημειώστε ότι το [% c.cobrand.council_name %] δεν είναι υπεύθυνο για αυτό το είδος
+προβλήματος, οπότε θα σταλεί στο [% report.body %].
+[% END %]
+Το πρόβλημά σας είχε τον τίτλο:
+[% report.title %]
+Και λεπτομέρειες:
+[% report.detail %]
+Εάν δεν επιθυμείτε πλέον να στείλετε αυτήν την αναφορά, δεν χρειάζεται να κάνετε τίποτα.
+Με εκτίμηση,
+Η ομάδα του [% site_name %]
+
+Αυτό το email αποστάλη αυτόματα από έναν αυτοματοποιημένο λογαριασμό email, οπότε παρακαλούμε μην απαντήσετε σε αυτό.
+
+
+*** ENGLISH ***
+
+Hello [% report.name %],
+
+Please click on the link below to confirm that you want to send your report to
+[% report.body %].
+[% IF report.non_public %]Note that your report will not be
+published for public viewing on the [% site_name %] website but will be sent to [% report.body %].
+[% ELSE %]Note that your report will also appear on the [% site_name %] website.[% END %]
+
+[% token_url | replace('://fixmy', '://en.fixmy') | replace('://el.fixmy', '://en.fixmy') %]
+
+If your email program does not let you click on this link, copy and paste it
+into your web browser and press return.
+[% IF c.cobrand.is_council && !c.cobrand.owns_problem( report ) %]
+Please note that [% c.cobrand.council_name %] is not responsible for this type
+of issue, so it will instead be sent to [% report.body %].
+[% END %]
+
+Your report had the title:
+
+[% report.title %]
+
+And details:
+
+[% report.detail %]
+
+If you no longer wish to send this report, please take no further action.
+
+Thank you for submitting a report through [% site_name %].
+
+
+
+[% signature %]
+
+This email was sent automatically, from an unmonitored email account - so
+please do not reply to it.
