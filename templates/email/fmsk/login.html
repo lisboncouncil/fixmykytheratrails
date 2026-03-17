@@ -1,0 +1,39 @@
+[%
+
+email_columns = 1;
+
+PROCESS '_email_settings.html';
+
+INCLUDE '_email_top.html';
+
+%]
+
+<th style="[% td_style %][% only_column_style %]">
+  <h1 style="[% h1_style %]">Ευχαριστούμε που χρησιμοποιείτε το [% site_name %]</h1>
+  <p style="[% p_style %]">Κάντε κλικ στον παρακάτω σύνδεσμο για να επιβεβαιώσετε τη διεύθυνση email σας και να συνδεθείτε στο [% site_name %].
+</p>
+  <p style="margin: 20px auto; text-align: center">
+    <a style="[% button_style %]" href="[% url | replace('://fixmy', '://el.fixmy') | replace('://en.fixmy', '://el.fixmy') %]">Ναι, αυτή είναι η διεύθυνσή μου.</a>
+  </p>
+  <p style="[% p_style %]">
+    [% IF c.get_param('r').match('waste') %]
+Μόλις το κάνετε αυτό, θα μπορείτε να δείτε ή να τροποποιήσετε τις συνδρομές και τις παραλαβές απορριμμάτων σας.
+    [% ELSE %]
+   Μόλις το κάνετε αυτό, θα μπορείτε να προβάλετε και να διαχειριστείτε όλες τις αναφορές και τις ενημερώσεις που έχετε κάνει από το μενού «Ο λογαριασμός σας» στο [% site_name %].   [% END %]
+  </p>
+  <h2 style="[% h2_style %]; text-align:center; padding-top: 2em;">*** English ***</h2>
+  <h1 style="[% h1_style %]">Thanks for using [% site_name %]</h1>
+  <p style="[% p_style %]">Please click on the link below to confirm your email address and log into [% site_name %].</p>
+  <p style="margin: 20px auto; text-align: center">
+    <a style="[% button_style %]" href="[% url | | replace('://fixmy', '://en.fixmy') | replace('://el.fixmy', '://en.fixmy') %]">Yes, this is my address</a>
+  </p>
+  <p style="[% p_style %]">
+    [% IF c.get_param('r').match('waste') %]
+    Once you&rsquo;ve done this, you&rsquo;ll be able to view or amend your waste subscriptions and collections.
+    [% ELSE %]
+    Once you&rsquo;ve done this, you&rsquo;ll be able to view and manage all reports and updates you&rsquo;ve made from the &ldquo;Your account&rdquo; menu on [% site_name %].
+    [% END %]
+  </p>
+</th>
+
+[% INCLUDE '_email_bottom.html' %]
