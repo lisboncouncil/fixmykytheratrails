@@ -12,21 +12,21 @@ INCLUDE '_email_top.html';
 
   <h2 style="[% h2_style %]; text-align:center; padding-top: 2em;">*** Ελληνικά ***</h2>
 
-  <h1 style="[% h1_style %]">Αλλάξτε τη διεύθυνση email σας στο [% site_name %]</h1>
-  <p style="[% p_style %]">Κάντε κλικ στον παρακάτω σύνδεσμο για να επιβεβαιώσετε ότι θέλετε να ενημερώσετε τη διεύθυνση email σας στο [% site_name %]. Πρέπει να είστε συνδεδεμένοι στο λογαριασμό σας [% site_name %] σε αυτήν τη συσκευή και να κάνετε κλικ στον σύνδεσμο εντός 24 ωρών.</p>
+  <h1 style="[% h1_style %]">Αλλάξτε τη διεύθυνση email του [% site_name %]</h1>
+  <p style="[% p_style %]">Παρακαλώ κάντε κλικ στον παρακάτω σύνδεσμο για να επιβεβαιώσετε ότι επιθυμείτε να ενημερώσετε τη διεύθυνση ηλεκτρονικού ταχυδρομείου σας στον  [% site_name %].Πρέπει να είστε συνδεδεμένοι στον λογαριασμό σας στο [% site_name %] σε αυτή τη συσκευή και να κάνετε κλικ στον σύνδεσμο εντός 24 ωρών.</p>
   <p style="margin: 20px auto; text-align: center">
-    <a style="[% button_style %]" href="[% c.uri_for_action( 'auth/token', token ) %]">Αλλάξε τη διεύθυνση email μου</a>
+    <a style="[% button_style %]" href="[% c.uri_for_action( 'auth/token', token ) | replace('://fixmy', '://el.fixmy') | replace('://en.fixmy', '://el.fixmy') %]">Αλλαγή της διεύθυνσης ηλεκτρονικού ταχυδρομείου μου</a>
   </p>
-  <p style="[% p_style %]">Εάν δεν θέλετε πλέον να αλλάξετε τη διεύθυνση email σας, απλώς αγνοήστε αυτό το μήνυμα.</p>
+  <p style="[% p_style %]">άν δεν επιθυμείτε πλέον να αλλάξετε τη διεύθυνση ηλεκτρονικού ταχυδρομείου σας, απλώς αγνοήστε αυτό το μήνυμα.</p>
 
 
   <h2 style="[% h2_style %]; text-align:center; padding-top: 2em;">*** English ***</h2>
 
-  <h1 style="[% h1_style %]">Change your [% site_name %] email&nbsp;address</h1>
+  <h1 style="[% h1_style %]">Change your [% site_name %] email address</h1>
   <p style="[% p_style %]">Please click on the link below to confirm you wish to update your
 email address on [% site_name %]. You must be logged in to your [% site_name %] account on this device and click on the link within 24 hours.</p>
   <p style="margin: 20px auto; text-align: center">
-    <a style="[% button_style %]" href="[% c.uri_for_action( 'auth/token', token ) %]">Change my email address</a>
+    <a style="[% button_style %]" href="[% c.uri_for_action( 'auth/token', token ) | replace('://fixmy', '://en.fixmy') | replace('://el.fixmy', '://en.fixmy') %]">Change my email address</a>
   </p>
   <p style="[% p_style %]">If you no longer wish to change your email address, just ignore this email.</p>
 </th>
