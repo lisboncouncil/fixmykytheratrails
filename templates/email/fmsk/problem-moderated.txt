@@ -1,0 +1,77 @@
+Subject: [% site_name %]: Η αναφορά σας έχει υποβληθεί σε έλεγχο / Your report has been moderated
+
+Γεια σου [% user.name %],
+
+Η αναφορά σου στο [% site_name %] έχει υποβληθεί σε έλεγχο.
+
+[% IF types == “hide” -%]
+Η αναφορά έχει αποκρυφθεί από τον ιστότοπο.
+[% ELSE %]
+Τα ακόλουθα στοιχεία έχουν τροποποιηθεί:
+
+    [% types %]
+
+[% END -%]
+
+Η αναφορά σου είχε τον τίτλο:
+
+[% moderated_data.title %]
+
+Και λεπτομέρειες:
+
+[% moderated_data.detail %]
+
+[% UNLESS types == “hide” %]
+Μπορείτε να δείτε την αναφορά στη διεύθυνση [% report_uri | replace('://fixmy', '://en.fixmy') | replace('://el.fixmy', '://en.fixmy') %]
+[% END %]
+
+Εάν πιστεύετε ότι αυτή η αναφορά δεν έπρεπε να κρυφτεί, μπορείτε να επικοινωνήσετε
+με την ομάδα στη διεύθυνση [% report_complain_uri | replace('://fixmy', '://en.fixmy') | replace('://el.fixmy', '://en.fixmy') %]
+
+Σας ευχαριστούμε που υποβάλατε μια αναφορά μέσω του [% site_name %].
+
+
+[% signature %]
+
+Αυτό το email στάλθηκε αυτόματα, από έναν λογαριασμό email που δεν παρακολουθείται - οπότε παρακαλώ μην απαντήσετε σε αυτό.
+
+
+
+
+*** ENGLISH ***
+
+Hello [% user.name %],
+
+Your report on [% site_name %] has been moderated.
+
+[% IF types == 'hide' -%]
+The report has been hidden from the site.
+[% ELSE %]
+The following data has been changed:
+
+	[% types %]
+
+[% END -%]
+
+Your report had the title:
+
+[% moderated_data.title %]
+
+And details:
+
+[% moderated_data.detail %]
+
+[% UNLESS types == 'hide' %]
+You can see the report at [% report_uri | replace('://fixmy', '://en.fixmy') | replace('://el.fixmy', '://en.fixmy') %]
+[% END %]
+
+If you do not think that this report should have been moderated, you may contact
+the team at [% report_complain_uri | replace('://fixmy', '://el.fixmy') | replace('://en.fixmy', '://el.fixmy') %]
+
+Thank you for submitting a report through [% site_name %].
+
+
+[% signature %]
+
+This email was sent automatically, from an unmonitored email account - so
+please do not reply to it.
