@@ -1,6 +1,6 @@
 [%
 
-email_footer = "If there is a more appropriate email address for messages about " _ category_footer _ ", please let us know. This will help improve the service. We also welcome any other feedback you may have."
+email_footer =Εάν υπάρχει πιο κατάλληλη διεύθυνση ηλεκτρονικού ταχυδρομείου για μηνύματα σχετικά με το " _ category_footer _ ", ενημερώστε μας. Αυτό θα βοηθήσει στη βελτίωση της υπηρεσίας. Επίσης, θα χαρούμε να λάβουμε οποιαδήποτε άλλα σχόλια που μπορεί να έχετε. // [ENGLISH] If there is a more appropriate email address for messages about " _ category_footer _ ", please let us know. This will help improve the service. We also welcome any other feedback you may have.";
 email_columns = 2;
 
 PROCESS '_email_settings.html';
@@ -11,12 +11,45 @@ INCLUDE '_email_top.html';
 
 <th style="[% td_style %][% primary_column_style %]" id="primary_column">
   [% start_padded_box | safe %]
-  <h1 style="[% h1_style %]">New problem in your&nbsp;area</h1>
-  <p style="[% p_style %]">[% missing %][% multiple %]A user of [% site_name %] has submitted the following report
-of a local problem that they believe might require your attention.</p>
+  <h1 style="[% h1_style %]">Νέα αναφορά στην περιοχή σας</h1>
+  <p style="[% p_style %]">[% missing %][% multiple %]Ένας χρήστης του [% site_name %] υπέβαλε την ακόλουθη αναφορά για ένα τοπικό πρόβλημα που πιστεύει ότι μπορεί να απαιτεί την προσοχή σας./p>
 
   <p style="margin: 20px auto; text-align: center">
-    <a style="[% button_style %]" href="[% url %]">Show full report</a>
+    <a style="[% button_style %]" href="[% url  | replace('://fixmy', '://el.fixmy') | replace('://en.fixmy', '://el.fixmy') %]">Εμφάνιση πλήρους αναφοράς</a>
+  </p>
+  <h2 style="[% h2_style %] margin: 30px 0 10px 0">Αναφορά από:</h2>
+  <table [% table_reset | safe %]>
+    <tr>
+      <th style="[% contact_th_style %]">Ονομα</th>
+      <td style="[% contact_td_style %]">[% report.name | html %]</td>
+    </tr>
+    <tr>
+      <th style="[% contact_th_style %]">ηλεκτρονικό ταχυδρομείο</th>
+      <td style="[% contact_td_style %]">
+        [%~ IF report.user.email ~%]
+          <a href="mailto:[% report.user.email | html %]">[% report.user.email | html %]</a>
+        [%~ ELSE ~%]
+          <strong>Δεν παρέχεται διεύθυνση ηλεκτρονικού ταχυδρομείου, μόνο αριθμός τηλεφώνου</strong>
+        [%~ END ~%]
+      </td>
+    </tr>
+    [%~ IF report.user.phone %]
+      <tr>
+        <th style="[% contact_th_style %]">τηλέφωνο</th>
+        <td style="[% contact_td_style %]"><a href="tel:[% report.user.phone | html %]">[% report.user.phone | html %]</a></td>
+      </tr>
+    [%~ END %]
+  </table>
+  <p style="[% p_style %] margin-top: 0.5em;">Οι απαντήσεις σε αυτό το μήνυμα θα σταλούν απευθείας στον [% report.name | html %], τον χρήστη που υπέβαλε την αναφορά.</p>
+  [% end_padded_box | safe %]
+  <br>
+  [% start_padded_box | safe %]
+  <h2 style="[% h2_style %]; text-align:center;">*** English ***</h2>
+  <h1 style="[% h1_style %]">New report in your&nbsp;area</h1>
+  <p style="[% p_style %]">[% missing %][% multiple %]A user of [% site_name %] has submitted the following report, which they believe might require your attention.</p>
+
+  <p style="margin: 20px auto; text-align: center">
+    <a style="[% button_style %]" href="[% url | replace('://fixmy', '://en.fixmy') | replace('://el.fixmy', '://en.fixmy') %]">Show full report</a>
   </p>
   <h2 style="[% h2_style %] margin: 30px 0 10px 0">Reported by:</h2>
   <table [% table_reset | safe %]>
@@ -41,8 +74,9 @@ of a local problem that they believe might require your attention.</p>
       </tr>
     [%~ END %]
   </table>
-  <p style="[% p_style %] margin-top: 0.5em;">Replies to this message will go directly to [% report.name | html %], the user who reported the problem.</p>
+  <p style="[% p_style %] margin-top: 0.5em;">Replies to this message will go directly to [% report.name | html %], the user who submitted the report.</p>
   [% end_padded_box | safe %]
+
 </th>
 [% WRAPPER '_email_sidebar.html' object = report %]
     <h2 style="[% h2_style %]">[% report.title | html %]</h2>
@@ -57,7 +91,7 @@ of a local problem that they believe might require your attention.</p>
     </p>
   [% END %]
     <p style="[% secondary_p_style %]">
-      <strong>Location:</strong>
+      <strong>Vieta / Location:</strong>
       <a href="[% osm_url %]" title="View OpenStreetMap of this location">
         [%~ report.latitude %], [% report.longitude ~%]
       </a>

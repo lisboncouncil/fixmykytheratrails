@@ -1,0 +1,42 @@
+[%
+
+email_summary = "FixMy Kythera Trails: Επιβεβαιώστε την ενημέρωσή σας
+ / Confirm your update";
+email_columns = 2;
+
+PROCESS '_email_settings.html';
+
+INCLUDE '_email_top.html';
+
+%]
+
+<th style="[% td_style %][% primary_column_style %]" id="primary_column">
+  [% start_padded_box | safe %]
+  <h1 style="[% h1_style %]">Επιβεβαιώστε την ενημέρωσή σας
+</h1>
+  <p style="[% p_style %]">Κάντε κλικ στον παρακάτω σύνδεσμο για να επιβεβαιώσετε την ενημέρωσή σας στο [% site_name %].</p>
+  <p style="margin: 20px auto; text-align: center">
+    <a style="[% button_style %]" href="[% token_url | replace('://fixmy', '://el.fixmy') | replace('://en.fixmy', '://el.fixmy') %]">Ναι, επιβεβαιώστε την ενημέρωσή μου</a>
+  </p>
+  <p style="[% p_style %]">Σημειώστε ότι δεν στέλνουμε ενημερώσεις στο [% update.problem.body %] - προορίζονται ως χώρος για τους χρήστες του [% site_name %] να συζητούν, να υποστηρίζουν και να προσφέρουν συμβουλές.</p>
+  <p style="[% p_style %]">Εάν δεν επιθυμείτε πλέον να επιβεβαιώσετε αυτήν την ενημέρωση, μην προβείτε σε καμία περαιτέρω ενέργεια.</p>
+  [% end_padded_box | safe %]
+  <br>
+  [% start_padded_box | safe %]
+  <h2 style="[% h2_style %]; text-align:center;">*** English ***</h2>
+  <h1 style="[% h1_style %]">Please confirm your update</h1>
+  <p style="[% p_style %]">Please click on the link below to confirm your update on [% site_name %].</p>
+  <p style="margin: 20px auto; text-align: center">
+    <a style="[% button_style %]" href="[% token_url | replace('://fixmy', '://en.fixmy') | replace('://el.fixmy', '://en.fixmy') %]">Yes, confirm my update</a>
+  </p>
+  <p style="[% p_style %]">Note that we do not send updates to [% update.problem.body %] - they are intended as a place for [% site_name %] users to discuss, support, and offer advice.</p>
+  <p style="[% p_style %]">If you no longer wish to confirm this update, please take no further action.</p>
+  [% end_padded_box | safe %]
+</th>
+[% WRAPPER '_email_sidebar.html'
+     object = update
+     report = problem %]
+     <p style="[% secondary_p_style %]">[% update.text | html %]</p>
+[% END %]
+
+[% INCLUDE '_email_bottom.html' %]

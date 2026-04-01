@@ -1,0 +1,40 @@
+Subject: FixMy Kythera Trails: Επιβεβαιώστε την ενημέρωσή σας / Confirm your update
+
+Γεια σου [% update.name %],
+
+Παρακαλώ κάνε κλικ στον παρακάτω σύνδεσμο για να επιβεβαιώσεις την ενημέρωσή σου στο [% site_name %]:
+
+[% token_url | replace('://fixmy', '://el.fixmy') | replace('://en.fixmy', '://el.fixmy') %]
+
+Εάν το πρόγραμμα ηλεκτρονικού ταχυδρομείου σας δεν σας επιτρέπει να κάνετε κλικ σε αυτόν τον σύνδεσμο, αντιγράψτε τον και επικολλήστε τον στον περιηγητή ιστού σας και πατήστε το πλήκτρο Enter.
+Η ενημέρωσή σας έχει ως εξής:
+[% update.text %]
+
+    Σημειώστε ότι δεν στέλνουμε ενημερώσεις στο [% update.problem.body %] - προορίζονται ως χώρος για τους χρήστες του [% site_name %] να συζητούν, να υποστηρίζουν και να προσφέρουν συμβουλές.
+    
+Με εκτίμηση,
+Η ομάδα του [% site_name %]
+
+Αυτό το email αποστάλη αυτόματα από έναν αυτοματοποιημένο λογαριασμό email, οπότε παρακαλούμε μην απαντήσετε σε αυτό.
+
+
+
+*** ENGLISH ***
+
+Hello [% update.name %],
+
+Please click on the link below to confirm your update on [% site_name %]:
+
+[% token_url | replace('://fixmy', '://en.fixmy') | replace('://el.fixmy', '://en.fixmy') %]
+
+If your email program does not let you click on this link, copy and paste it into your web browser and press return.
+
+Your update reads:
+
+[% update.text %]
+
+  Note that we do not send updates to [% update.problem.body %] - they are intended as a place for [% site_name %] users to discuss, support, and offer advice.
+
+[% signature %]
+
+This email was sent automatically, from an unmonitored email account - so please do not reply to it.
