@@ -6,7 +6,7 @@ Subject: [% site_name %]: Επιβεβαιώστε την αναφορά σας 
 [% IF report.non_public %]Σημειώστε ότι η αναφορά σας δεν θα
 δημοσιευτεί για δημόσια προβολή στον ιστότοπο [% site_name %], αλλά θα σταλεί στο [% report.body %].
 [% ELSE %]Σημειώστε ότι η αναφορά σας θα εμφανιστεί επίσης στον ιστότοπο [% site_name %].[% END %]
-[% token_url | replace(“://fixmy”, “://en.fixmy”) | replace(“://el.fixmy”, “://en.fixmy”) %]
+[% token_url | replace("://fixmy", "://en.fixmy") | replace("://el.fixmy", "://en.fixmy") %]
 Εάν το πρόγραμμα ηλεκτρονικού ταχυδρομείου σας δεν σας επιτρέπει να κάνετε κλικ σε αυτόν τον σύνδεσμο, αντιγράψτε τον και επικολλήστε τον
 στον περιηγητή ιστού σας και πατήστε το πλήκτρο Enter.
 [% IF c.cobrand.is_council && !c.cobrand.owns_problem( report ) %]
