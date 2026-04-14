@@ -41,7 +41,7 @@ footer {
   background-color: $bluey;
 }
 
-@media only screen and (max-width: 576px) {
+@media only screen and (max-width: 767px) {
   footer {
     padding: 1em 0 1em 0;
     margin: 2em -1em 0;
@@ -55,4 +55,9 @@ footer {
 
 .footer-marketing>:last-child {
     color: #FFF;
+}
+
+/* Improve visibility of "report" menu / button on mobile */
+a#report-cta {
+    color: #fff;
 }
