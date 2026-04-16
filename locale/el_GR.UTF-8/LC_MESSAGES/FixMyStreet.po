@@ -7368,7 +7368,7 @@ msgstr "Πολιτική απορρήτου"
 msgid "Cookies policy"
 msgstr "Πολιτική για τα cookies"
 
-msgid "It's on its way to the KIPA association right now."
+msgid "It’s on its way to the KIPA association right now."
 msgstr "Το πρόβλημα έχει σταλεί στον σύλλογο KIPA αυτή τη στιγμή."
 
 msgid "In collaboration with"
