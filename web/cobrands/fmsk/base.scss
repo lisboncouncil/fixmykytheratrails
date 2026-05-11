@@ -61,3 +61,9 @@ footer {
 a#report-cta {
     color: #fff;
 }
+
+a#report-cta {
+  a:visited, .fake-link:visited {
+    color: #fff;
+  }
+}
